@@ -40,8 +40,8 @@ const ArticlesTabs: React.FC<NewsTabsProps> = ({ articles }) => {
       article.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const getGridClass = (index: number): string => {
-    if (searchTerm) return "col-span-1 row-span-1";
+  const getGridClass = (index: number, isRecentlyViewed: boolean): string => {
+    if (isRecentlyViewed || searchTerm) return "col-span-1 row-span-1"; // Apply the grid class for recently-viewed or if there's a search term
     if (index === 0 || index === 7 || index === 10 || index === 17)
       return "col-span-2 row-span-2";
     return "col-span-1 row-span-1";
@@ -50,7 +50,7 @@ const ArticlesTabs: React.FC<NewsTabsProps> = ({ articles }) => {
   return (
     <div className="w-full p-4 bg-gray-900 text-gray-100">
       <SearchInput searchTerm={searchTerm} onSearch={setSearchTerm} />
-      <Tabs defaultValue="all-news" className="w-full">
+      <Tabs defaultValue="all-news" className="w-full my-4 ">
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="all-news">All News</TabsTrigger>
           <TabsTrigger value="recently-viewed">Recently Viewed</TabsTrigger>
@@ -59,14 +59,18 @@ const ArticlesTabs: React.FC<NewsTabsProps> = ({ articles }) => {
           <ArticleGrid
             articles={filteredArticles}
             onReadMore={handleReadMore}
-            getGridClass={getGridClass}
+            getGridClass={(index) => getGridClass(index, false)}
+            isAllNewsTab={true}
+            searchTerm={searchTerm}
           />
         </TabsContent>
         <TabsContent value="recently-viewed">
           <ArticleGrid
             articles={recentlyViewed}
             onReadMore={handleReadMore}
-            getGridClass={getGridClass}
+            getGridClass={(index) => getGridClass(index, true)}
+            isAllNewsTab={false}
+            searchTerm={searchTerm}
           />
         </TabsContent>
       </Tabs>
